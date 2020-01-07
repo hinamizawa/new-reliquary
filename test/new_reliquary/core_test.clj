@@ -5,7 +5,6 @@
             [ring.middleware.params :refer [wrap-params]]
             [clojure.tools.trace :refer [trace]]))
 
-
 (def set-transaction-name-calls (atom []))
 (def add-custom-parameter-calls (atom []))
 
@@ -17,7 +16,6 @@
                         (reset! set-transaction-name-calls [])
                         (reset! add-custom-parameter-calls [])
                         (test))))
-
 
 (deftest with-name-and-custom-params
   (testing "tracks transaction"

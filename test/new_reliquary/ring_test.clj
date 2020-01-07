@@ -5,7 +5,6 @@
             [ring.middleware.params :refer [wrap-params]]
             [clojure.tools.trace :refer [trace]]))
 
-
 (defn build-app [status content-type]
   (-> (fn [req] {:body    req
                  :headers {"Content-Type" content-type}
@@ -16,7 +15,7 @@
 (def set-request-response-calls (atom []))
 (def set-transaction-name-calls (atom []))
 (def add-custom-parameter-calls (atom []))
-(def ignore-transaction-calls   (atom 0))
+(def ignore-transaction-calls (atom 0))
 
 (def content-type "application/json")
 
@@ -39,7 +38,7 @@
                         (reset! set-request-response-calls [])
                         (reset! set-transaction-name-calls [])
                         (reset! add-custom-parameter-calls [])
-                        (reset! ignore-transaction-calls   0)
+                        (reset! ignore-transaction-calls 0)
                         (test))))
 
 (deftest with-request-params

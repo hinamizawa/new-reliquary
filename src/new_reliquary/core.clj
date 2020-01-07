@@ -27,7 +27,8 @@
       (add-custom-parameter (str key) (str value)))
     (callback)))
 
-(deftype NewRelicTracer [] NewRelicTracable
+(deftype NewRelicTracer []
+  NewRelicTracable
   (^{Trace {:dispatcher true}} trace [_ callback]
     (callback))
   (doTransaction [this callback]
@@ -44,7 +45,6 @@
   ([category transaction-name custom-params callback]
    (.doTransaction (NewRelicTracer.) (wrap-with-named-transaction category transaction-name custom-params callback)))
   ([category transaction-name callback]
-    (with-newrelic-transaction category transaction-name {} callback))
+   (with-newrelic-transaction category transaction-name {} callback))
   ([callback]
-    (.doTransaction (NewRelicTracer.) callback)))
-
+   (.doTransaction (NewRelicTracer.) callback)))

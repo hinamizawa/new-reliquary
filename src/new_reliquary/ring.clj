@@ -65,7 +65,8 @@
        (first)
        (second)))
 
-(deftype NewRelicRingWrapperRequest [req] Request
+(deftype NewRelicRingWrapperRequest [req]
+  Request
   (getRequestURI [_] (resolve-uri req))
   (getRemoteUser [_] nil)
   (getParameterNames [_] (keys (resolve-query-params req)))
@@ -77,7 +78,8 @@
   (getHeader [_ name] (get (resolve-headers req) name))
   (getHeaderType [_] HeaderType/HTTP))
 
-(deftype NewRelicRingWrapperResponse [res] Response
+(deftype NewRelicRingWrapperResponse [res]
+  Response
   (getContentType [_] (resolve-content-type res))
   (getStatusMessage [this] (get status-code-mapping (.getStatus this)))
   (getStatus [_] (get res :status 200)))
@@ -86,10 +88,10 @@
   (doseq [[key value] (sort-by key (seq params))]
     (newrelic/add-custom-parameter key value)))
 
-(defn- web-transaction [request-hander request]
+(defn- web-transaction [request-handler request]
   (fn []
     (let [newrelic-req (NewRelicRingWrapperRequest. request)
-          response     (request-hander request)
+          response     (request-handler request)
           newrelic-res (NewRelicRingWrapperResponse. response)]
       (add-query-params (resolve-query-params request))
       (newrelic/set-request-response newrelic-req newrelic-res)
