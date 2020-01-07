@@ -72,7 +72,7 @@
   (getParameterNames [_] (keys (resolve-query-params req)))
   (getParameterValues [_ name]
     (let [value (get (resolve-query-params req) name)]
-      (if (nil? value) nil (into-array [(str value)]))))
+      (when-not (nil? value) (into-array [(str value)]))))
   (getCookieValue [_ _] nil)
   (getAttribute [_ _] nil)
   (getHeader [_ name] (get (resolve-headers req) name))

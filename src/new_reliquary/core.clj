@@ -24,12 +24,19 @@
 (defn notice-error [error]
   (NewRelic/noticeError error))
 
-(defn- wrap-with-named-transaction [category name custom-params callback]
-  (fn []
-    (set-transaction-name category name)
-    (doseq [[key value] (seq custom-params)]
-      (add-custom-parameter (str key) (str value)))
-    (callback)))
+(defn- wrap-with-named-transaction
+  ([category name custom-params callback]
+   (fn []
+     (set-transaction-name category name)
+     (doseq [[key value] (seq custom-params)]
+       (add-custom-parameter (str key) (str value)))
+     (callback)))
+  ([category name custom-params callback callback-parameter]
+   (fn []
+     (set-transaction-name category name)
+     (doseq [[key value] (seq custom-params)]
+       (add-custom-parameter (str key) (str value)))
+     (apply callback callback-parameter))))
 
 (deftype NewRelicTracer []
   NewRelicTracable
@@ -64,12 +71,12 @@
 (defn with-newrelic-transaction-and-callback-parameter
   ([category transaction-name custom-params callback callback-parameter]
    (.doTransaction (NewRelicTracer.)
-                   (with-newrelic-transaction-and-callback-parameter
-                     category
-                     transaction-name
-                     custom-params
-                     callback
-                     callback-parameter)))
+                   (wrap-with-named-transaction
+                    category
+                    transaction-name
+                    custom-params
+                    callback
+                    callback-parameter)))
   ([category transaction-name callback callback-parameter]
    (with-newrelic-transaction-and-callback-parameter category transaction-name {} callback callback-parameter))
   ([callback callback-parameter]
