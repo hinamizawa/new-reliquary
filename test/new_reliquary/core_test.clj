@@ -34,3 +34,10 @@
     (core/with-newrelic-transaction empty-handler)
     (is (= @add-custom-parameter-calls []))
     (is (= @set-transaction-name-calls []))))
+
+(deftest without-name-or-custom-params
+  (testing "tracks transaction with callback parameter(s)"
+    (is (= (core/with-newrelic-transaction-and-callback-parameter (fn [num] (* num num)) [10])
+           100))
+    (is (= (core/with-newrelic-transaction-and-callback-parameter (fn [a b] (* a b)) [3 4])
+           12))))
