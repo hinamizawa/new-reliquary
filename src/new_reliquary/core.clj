@@ -1,9 +1,13 @@
 (ns new-reliquary.core
   (:import [com.newrelic.api.agent NewRelic Trace]))
 
-(definterface NewRelicTracable
-  (trace [callback])
-  (doTransaction [callback]))
+(defprotocol NewRelicTracable
+  (trace
+    [this callback]
+    [this callback callback-parameter])
+  (doTransaction
+    [this callback]
+    [this callback callback-parameter]))
 
 (defn set-transaction-name [category name]
   (NewRelic/setTransactionName category name))
@@ -31,6 +35,8 @@
   NewRelicTracable
   (^{Trace {:dispatcher true}} trace [_ callback]
     (callback))
+  (^{Trace {:dispatcher true}} trace [_ callback callback-parameter]
+    (apply callback callback-parameter))
   (doTransaction [this callback]
     (try
       (.trace this callback)
@@ -38,6 +44,12 @@
         ; .trace() method already reports the error due to @Trace annotation => we don't want that
         ; NewRelic reports the error twice, thus ignore the outer ("global") transaction
         ; TODO: how to resolve nested transactions case?
+        (ignore-transaction)
+        (throw e))))
+  (doTransaction [this callback callback-parameter]
+    (try
+      (.trace this callback callback-parameter)
+      (catch Throwable e
         (ignore-transaction)
         (throw e)))))
 
@@ -48,3 +60,17 @@
    (with-newrelic-transaction category transaction-name {} callback))
   ([callback]
    (.doTransaction (NewRelicTracer.) callback)))
+
+(defn with-newrelic-transaction-and-callback-parameter
+  ([category transaction-name custom-params callback callback-parameter]
+   (.doTransaction (NewRelicTracer.)
+                   (with-newrelic-transaction-and-callback-parameter
+                     category
+                     transaction-name
+                     custom-params
+                     callback
+                     callback-parameter)))
+  ([category transaction-name callback callback-parameter]
+   (with-newrelic-transaction-and-callback-parameter category transaction-name {} callback callback-parameter))
+  ([callback callback-parameter]
+   (.doTransaction (NewRelicTracer.) callback callback-parameter)))

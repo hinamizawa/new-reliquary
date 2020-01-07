@@ -1,4 +1,4 @@
-(defproject hinamizawa/new-reliquary "0.1.0"
+(defproject hinamizawa/new-reliquary "0.1.1"
   :description "Clojure newrelic java api wrapper"
   :url "https://github.com/hinamizawa/new-reliquary"
   :license {:name "Eclipse Public License"
