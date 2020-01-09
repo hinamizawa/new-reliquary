@@ -97,13 +97,13 @@
       (newrelic/set-request-response newrelic-req newrelic-res)
       response)))
 
-(defn wrap-route-with-newrelic-transaction [handler]
-  (fn [request] (newrelic/with-newrelic-transaction (web-transaction handler request))))
-
 (defn wrap-newrelic-transaction [handler]
-  (fn [request respond raise]
-    (let [newrelic-req (NewRelicRingWrapperRequest. request)
-          newrelic-res (NewRelicRingWrapperResponse. respond)]
-      (add-query-params (resolve-query-params request))
-      (newrelic/set-request-response newrelic-req newrelic-res)
-      (handler request respond raise))))
+  (fn
+    ([request]
+     (newrelic/with-newrelic-transaction (web-transaction handler request)))
+    ([request respond raise]
+     (let [newrelic-req (NewRelicRingWrapperRequest. request)
+           newrelic-res (NewRelicRingWrapperResponse. respond)]
+       (add-query-params (resolve-query-params request))
+       (newrelic/set-request-response newrelic-req newrelic-res)
+       (handler request respond raise)))))
