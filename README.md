@@ -10,3 +10,6 @@ Clojure CLI/deps.edn
 ```
 hinamizawa/new-reliquary {:mvn/version "0.1.4"}
 ```
+
+
+A sample project can be found here [https://github.com/hinamizawa/newrelic-sample]
