@@ -1,6 +1,6 @@
 (ns new-reliquary.ring
   (:require [new-reliquary.core :as newrelic])
-  (:import (com.newrelic.api.agent Response HeaderType Request)))
+  (:import [com.newrelic.api.agent Response HeaderType Request]))
 
 ; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
 (def status-code-mapping
