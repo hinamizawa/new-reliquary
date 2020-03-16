@@ -3,12 +3,12 @@ For personal use only.
 
 Leiningen/Boot
 ```
-[hinamizawa/new-reliquary "0.1.4"]
+[hinamizawa/new-reliquary "0.1.5"]
 ```
 
 Clojure CLI/deps.edn
 ```
-hinamizawa/new-reliquary {:mvn/version "0.1.4"}
+hinamizawa/new-reliquary {:mvn/version "0.1.5"}
 ```
 
 
